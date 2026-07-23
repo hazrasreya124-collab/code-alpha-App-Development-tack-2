@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lingo Passport — Interactive Language Learning</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Source+Serif+4:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- Login / Signup Overlay -->
+<div class="auth-overlay" id="auth-overlay">
+  <div class="auth-card">
+    <div class="auth-header">
+      <div class="auth-logo">🌍</div>
+      <h2 class="auth-title">Lingo Passport</h2>
+      <p class="auth-subtitle">Your language learning journey starts here</p>
+    </div>
+
+    <!-- Login Form -->
+    <form class="auth-form" id="login-form">
+      <h3 class="form-title">Welcome Back</h3>
+      <div class="input-group">
+        <label for="login-email">Email</label>
+        <input type="email" id="login-email" placeholder="you@example.com" required autocomplete="email">
+      </div>
+      <div class="input-group">
+        <label for="login-password">Password</label>
+        <input type="password" id="login-password" placeholder="••••••••" required autocomplete="current-password">
+      </div>
+      <div class="input-group checkbox-group">
+        <input type="checkbox" id="remember-me">
+        <label for="remember-me">Remember me</label>
+      </div>
+      <button type="submit" class="auth-btn primary-btn">Sign In</button>
+      <p class="auth-switch">Don't have an account? <a href="#" id="show-signup">Create one</a></p>
+      <p class="auth-error" id="login-error"></p>
+    </form>
+
+    <!-- Signup Form (hidden by default) -->
+    <form class="auth-form" id="signup-form" style="display:none;">
+      <h3 class="form-title">Create Account</h3>
+      <div class="input-group">
+        <label for="signup-name">Full Name</label>
+        <input type="text" id="signup-name" placeholder="John Doe" required autocomplete="name">
+      </div>
+      <div class="input-group">
+        <label for="signup-email">Email</label>
+        <input type="email" id="signup-email" placeholder="you@example.com" required autocomplete="email">
+      </div>
+      <div class="input-group">
+        <label for="signup-password">Password</label>
+        <input type="password" id="signup-password" placeholder="Min 6 characters" required autocomplete="new-password" minlength="6">
+      </div>
+      <div class="input-group">
+        <label for="signup-confirm">Confirm Password</label>
+        <input type="password" id="signup-confirm" placeholder="Re-enter password" required autocomplete="new-password" minlength="6">
+      </div>
+      <button type="submit" class="auth-btn primary-btn">Create Account</button>
+      <p class="auth-switch">Already have an account? <a href="#" id="show-login">Sign In</a></p>
+      <p class="auth-error" id="signup-error"></p>
+    </form>
+  </div>
+</div>
+
+<!-- Main App (hidden until login) -->
+<div class="wrap" id="app-wrap" style="display:none;">
+  <div class="app-header">
+    <div class="eyebrow">CodeAlpha App Development — Task 04</div>
+    <div class="header-row">
+      <h1>🌍 Lingo Passport</h1>
+      <div class="user-menu">
+        <button class="user-btn" id="user-btn">
+          <span class="user-avatar" id="user-avatar"></span>
+          <span class="user-name" id="user-name-display"></span>
+          <span class="dropdown-arrow">▾</span>
+        </button>
+        <div class="user-dropdown" id="user-dropdown" style="display:none;">
+          <div class="dropdown-item" id="logout-btn">🚪 Sign Out</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p class="subtitle">Your interactive language companion. Learn vocabulary, phrases, and grammar with pronunciation. Test your skills with quizzes and track your progress.</p>
+
+  <!-- Streak & Stats Bar -->
+  <div class="stats-bar" id="stats-bar">
+    <div class="stat-item">
+      <span class="stat-icon">🔥</span>
+      <span class="stat-value" id="streak-count">0</span>
+      <span class="stat-label">Day Streak</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-icon">📚</span>
+      <span class="stat-value" id="words-learned">0</span>
+      <span class="stat-label">Words Learned</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-icon">⭐</span>
+      <span class="stat-value" id="avg-score">0%</span>
+      <span class="stat-label">Avg Quiz Score</span>
+    </div>
+  </div>
+
+  <!-- Language Selection -->
+  <div class="section-label">Choose Language</div>
+  <div class="lang-row" id="lang-row"></div>
+
+  <!-- Mode Tabs -->
+  <div class="mode-tabs" id="mode-tabs">
+    <button class="mode-tab active" data-mode="lessons">📖 Lessons</button>
+    <button class="mode-tab" data-mode="flashcards">🃏 Flashcards</button>
+    <button class="mode-tab" data-mode="quiz">✅ Quiz</button>
+    <button class="mode-tab" data-mode="favorites">❤️ Favorites</button>
+  </div>
+
+  <!-- Category Selection (for lessons & flashcards) -->
+  <div id="category-section">
+    <div class="section-label">Category</div>
+    <div id="category-row" class="category-row"></div>
+  </div>
+
+  <!-- Difficulty Selection (for quiz) -->
+  <div id="difficulty-section" style="display:none;">
+    <div class="section-label">Difficulty</div>
+    <div class="difficulty-row">
+      <button class="diff-btn active" data-diff="easy">Easy</button>
+      <button class="diff-btn" data-diff="medium">Medium</button>
+      <button class="diff-btn" data-diff="hard">Hard</button>
+    </div>
+  </div>
+
+  <!-- Main Content Area -->
+  <div id="lessons-view"></div>
+  <div id="flashcards-view" style="display:none;"></div>
+  <div id="quiz-view" style="display:none;"></div>
+  <div id="favorites-view" style="display:none;"></div>
+
+  <footer>
+    <strong>DATA</strong> — Vocabulary, phrases, and grammar notes stored locally. Progress synced via localStorage.<br>
+    <strong>AUDIO</strong> — Pronunciation uses Web Speech API for authentic text-to-speech in each language.<br>
+    <strong>STREAK</strong> — Come back daily to maintain your learning streak!
+  </footer>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
